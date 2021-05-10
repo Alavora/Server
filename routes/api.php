@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Market;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::apiResource("markets", "App\Http\Controllers\Api\MarketController");
+// Route::get("markets", "App\Http\Controllers\Api\MarketController@index");
+// Route::get("markets/{id}", "App\Http\Controllers\Api\MarketController@show");
