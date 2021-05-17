@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPersonalDataToUserTable extends Migration
+class AddPersonalDataToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class AddPersonalDataToUserTable extends Migration
      */
     public function up()
     {
-        Schema::table('user', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('address');
             $table->string('phone');
             $table->double('longitude')->nullable();
             $table->double('latitude')->nullable();
-
         });
     }
 
@@ -29,7 +28,7 @@ class AddPersonalDataToUserTable extends Migration
      */
     public function down()
     {
-        Schema::table('user', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('address');
             $table->dropColumn('phone');
             $table->dropColumn('longitude');
