@@ -16,11 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Auth::routes();
+// Auth::routes();
 
 //default falback to wellcome
-Route::get('/{any?}', function () {
-    return view('welcome');
-})->where('any', '^(?!api\/)[\/\w\.\,-]*');
+// Route::get('/{any?}', function () {
+//     return view('welcome');
+// })->where('any', '^(?!api\/)[\/\w\.\,-]*');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -12,6 +12,7 @@ class MarketController extends Controller
 {
     public function index()
     {
+
         // return Market::all();
         return MarketIndexResource::collection(Market::all());
     }
