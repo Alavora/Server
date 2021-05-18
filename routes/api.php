@@ -19,7 +19,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource("markets", "App\Http\Controllers\Api\MarketController")->only("index", "show");
+Route::apiResource("markets", "App\Http\Controllers\Api\MarketController")->only("index", "show", "store");
 Route::apiResource("shops", "App\Http\Controllers\Api\ShopController")->only("index", "show");
-// Route::get("markets", "App\Http\Controllers\Api\MarketController@index");
+Route::apiResource("shops", "App\Http\Controllers\Api\ShopController")->only("index", "show");
+Route::apiResource("products", "App\Http\Controllers\Api\ProductController")->only("index", "show");
+//Route::get("markets/{marketId}/shops", "App\Http\Controllers\Api\ShopController@indexByMarket");
 // Route::get("shops/{market_id}", "App\Http\Controllers\Api\MarketController@show");

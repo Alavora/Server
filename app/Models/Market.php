@@ -9,6 +9,8 @@ class Market extends Model
 {
     use HasFactory;
 
+    protected $fillable = ["name", "description", "cif", "market_image"];
+
     public function shops()
     {
         return $this->hasMany(Shop::class);
