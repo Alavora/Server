@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ShopIndexResource;
 use App\Http\Resources\ShopResource;
+use App\Models\Market;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 
@@ -33,12 +34,15 @@ class ShopController extends Controller
             'latitude' => 'min:3',
         ]);
 
-        $image_name = $request->file('image')->getClientOriginalName();
-        $path = $request->file('image')->store('public/images');
+        $market = Market::findOrFail($request->market_id);
+
+        // $image_name = $request->file('image')->getClientOriginalName();
+        // $path = $request->file('image')->store('public/images');
 
         $shop = Shop::make($data);
-        $shop->image_path = $path;
-        $shop->image_name = $image_name;
+        // $shop->image_path = $path;
+        // $shop->image_name = $image_name;
+        $shop->market()->associate($market);
         $shop->save();
         return new ShopResource($shop);
     }

@@ -34,13 +34,15 @@ class MarketController extends Controller
             "description" => 'required|min:3',
             "cif" => 'required|min:3',
             'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            // 'market_id' => ''
         ]);
 
         $name = $request->file('image')->getClientOriginalName();
         $path = $request->file('image')->store('public/images');
 
         $market = Market::make($data);
-        $market->path = $path;
+        $market->image_name = $name;
+        $market->image_path = $path;
         $market->save();
         return new MarketResource($market);
     }

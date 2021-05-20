@@ -9,6 +9,8 @@ class Shop extends Model
 {
     use HasFactory;
 
+    protected $fillable = ["name", "phone", "cif", "shop_image", "address"];
+
     public function market()
     {
         return $this->belongsTo(Market::class);
@@ -17,5 +19,9 @@ class Shop extends Model
     public function baskets()
     {
         return $this->hasMany(Basket::class);
+    }
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }
