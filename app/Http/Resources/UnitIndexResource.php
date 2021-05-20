@@ -16,6 +16,7 @@ class UnitIndexResource extends JsonResource
     {
         // return parent::toArray($request);
         return [
+            'id' => $this->id,
             'view' => $this->name,
             'viewValue' => $this->symbol,
         ];
