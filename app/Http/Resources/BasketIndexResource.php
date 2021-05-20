@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UnitIndexResource extends JsonResource
+class BasketIndexResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,10 +14,6 @@ class UnitIndexResource extends JsonResource
      */
     public function toArray($request)
     {
-        // return parent::toArray($request);
-        return [
-            'view' => $this->name,
-            'viewValue' => $this->symbol,
-        ];
+        return parent::toArray($request);
     }
 }

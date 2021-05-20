@@ -22,8 +22,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResource("markets", "App\Http\Controllers\Api\MarketController")->only("index", "show", "store",);
 Route::apiResource("shops", "App\Http\Controllers\Api\ShopController")->only("index", "show", "store");
 Route::apiResource("products", "App\Http\Controllers\Api\ProductController")->only("index", "show", "store");
-Route::apiResource("units", "App\Http\Controllers\Api\ProductController")->only("index", "show", "store");
-Route::get("baskets/add", "App\Http\Controllers\Api\BasketController@addProduct");
+Route::apiResource("units", "App\Http\Controllers\Api\UnitController")->only("index", "show", "store");
+Route::post("baskets/addproduct", "App\Http\Controllers\Api\BasketController@addProduct");
 
 //Route::get("markets/{marketId}/shops", "App\Http\Controllers\Api\ShopController@indexByMarket");
 // Route::get("shops/{market_id}", "App\Http\Controllers\Api\MarketController@show");
