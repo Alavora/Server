@@ -12,10 +12,10 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index(Request $request, $shop_id)
+    public function index(Request $request)
     {
         // return Market::all();
-        return ProductIndexResource::collection(Product::all()->Where("market_id", $shop_id));
+        return ProductIndexResource::collection(Product::all()->Where("market_id", $request->shop_id));
     }
 
 
