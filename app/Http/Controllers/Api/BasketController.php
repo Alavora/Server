@@ -134,16 +134,36 @@ class BasketController extends Controller
             'shop_id' => $request->shop_id,
         ]);
         return response()->json([
-            'data' => $basket->comment
+            'data' => $basket->comments
         ]);
     }
 
     public function postComment(Request $request)
     {
+        $values = $request->validate([
+            'comments' => 'required',
+            'shop_id' => 'required|integer',
+        ]);
         $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->firstOrCreate([
             'shop_id' => $request->shop_id,
         ]);
-        $basket->comment = $request->comment;
+        $basket->comments = $values['comments'];
+        $basket->save();
         return response()->json(['return' => True], 202);
+    }
+
+    /**
+     * Confirms de basket to be prepared by shop
+     *
+     * @param Request $request it should contain a valid shop_id
+     * @return void
+     */
+    public function confirm(Request $request)
+    {
+        $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->firstOrCreate([
+            'shop_id' => $request->shop_id,
+        ]);
+        $basket->status = Basket::STATUS_CONFIRMED;
+        $basket->save();
     }
 }

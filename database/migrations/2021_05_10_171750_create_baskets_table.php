@@ -18,7 +18,7 @@ class CreateBasketsTable extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->text('comments')->default('');
+            $table->text('comments')->default('')->nullable();
             $table->dateTime('closed')->nullable()->default(null);
             $table->string('status')->default(Basket::STATUS_UNCONFIRMED);
 

@@ -26,6 +26,7 @@ Route::apiResource("units", "App\Http\Controllers\Api\UnitController")->only("in
 Route::post("baskets/addproduct", "App\Http\Controllers\Api\BasketController@addProduct");
 Route::get("baskets/comment", "App\Http\Controllers\Api\BasketController@getComment");
 Route::post("baskets/comment", "App\Http\Controllers\Api\BasketController@postComment");
+Route::post("baskets/confirm", "App\Http\Controllers\Api\BasketController@confirm");
 
 //Route::get("markets/{marketId}/shops", "App\Http\Controllers\Api\ShopController@indexByMarket");
 // Route::get("shops/{market_id}", "App\Http\Controllers\Api\MarketController@show");
