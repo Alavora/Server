@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\BasketIndexResource;
 use App\Http\Resources\BasketResource;
 use App\Http\Resources\BasketShowResource;
+use App\Http\Resources\ShopsBasketsResource;
 use App\Models\Basket;
 use App\Models\Item;
 use App\Models\Product;
@@ -21,9 +22,17 @@ class BasketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return BasketIndexResource::collection(Basket::all());
+        $data = $request->validate([
+            /** TODO **/
+            "shop_id" => 'required|integer',
+            // "description" => 'required|min:3',
+            // "cif" => 'required|min:3',
+            // 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            // // 'market_id' => ''
+        ]);
+        return BasketIndexResource::collection(Basket::where('shop_id', $data['shop_id'])->get());
     }
 
     /**
@@ -97,7 +106,6 @@ class BasketController extends Controller
      */
     public function addProduct(Request $request)
     {
-
         $values = $request->validate([
             'quantity' => 'required|numeric',
             'product_id' => 'required|integer',
@@ -165,5 +173,44 @@ class BasketController extends Controller
         ]);
         $basket->status = Basket::STATUS_CONFIRMED;
         $basket->save();
+        return response()->noContent(); // 204
+    }
+
+    public function itemConfirm(Request $request)
+    {
+        $data = $request->validate([
+            "item_id" => 'required|integer',
+        ]);
+        $item = Item::find($data['item_id']);
+
+        $item->status = Item::STATUS_CONFIRMED;
+        $item->save();
+        return response()->noContent(); // 204
+    }
+
+    public function itemUpdate(Request $request)
+    {
+        $data = $request->validate([
+            "item_id" => 'required|integer',
+        ]);
+    }
+
+    /**
+     * Returns all baskets for a client
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function shopsBaskets(Request $request)
+    {
+        $data = $request->validate([
+            /** TODO **/
+            "user_id" => 'required|integer',
+            // "description" => 'required|min:3',
+            // "cif" => 'required|min:3',
+            // 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            // // 'market_id' => ''
+        ]);
+        return ShopsBasketsResource::collection(Basket::where('user_id', $data['user_id'])->get());
     }
 }

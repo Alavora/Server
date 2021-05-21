@@ -52,4 +52,10 @@ class ShopController extends Controller
         Shop::deleted($shop_id);
         return response(null, 204);
     }
+
+    public function show($shop_id)
+    {
+
+        return response(null, 204);
+    }
 }

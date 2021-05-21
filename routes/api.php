@@ -27,6 +27,17 @@ Route::post("baskets/addproduct", "App\Http\Controllers\Api\BasketController@add
 Route::get("baskets/comment", "App\Http\Controllers\Api\BasketController@getComment");
 Route::post("baskets/comment", "App\Http\Controllers\Api\BasketController@postComment");
 Route::post("baskets/confirm", "App\Http\Controllers\Api\BasketController@confirm");
+Route::get("user/baskets", "App\Http\Controllers\Api\BasketController@shopsBaskets");
+
+
+//Seller
+Route::get("seller/baskets", "App\Http\Controllers\Api\BasketController@index");
+// Route::get("baskets/items", "App\Http\Controllers\Api\BasketController@itemGet");
+Route::post("seller/baskets/items/confirm", "App\Http\Controllers\Api\BasketController@itemConfirm");
+Route::post("seller/baskets/items/update", "App\Http\Controllers\Api\BasketController@itemUpdate");
+
+
+
 
 //Route::get("markets/{marketId}/shops", "App\Http\Controllers\Api\ShopController@indexByMarket");
 // Route::get("shops/{market_id}", "App\Http\Controllers\Api\MarketController@show");

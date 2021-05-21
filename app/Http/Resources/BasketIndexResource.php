@@ -14,6 +14,19 @@ class BasketIndexResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        // return parent::toArray($request);
+        return [
+            "id" => $this->id, // 1,
+            // "created_at" => $this-> , // "2021-05-21T13:44:55.000000Z",
+            // "updated_at" => $this-> , // "2021-05-21T13:56:09.000000Z",
+            "comments" => $this->comments, // "Lorem Ipsumjjjjjjjjjjjjjjj",
+            "closed" => $this->closed, // null,
+            "status" => $this->status, // "1",
+            "shop_id" => $this->shop_id, // 1,
+            "user_id" => $this->user_id, // 1,
+            "distributor_id" => $this->distributor_id, // null
+            "items" => ItemResource::collection($this->items),
+            "size" => count($this->items),
+        ];
     }
 }

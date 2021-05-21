@@ -19,4 +19,8 @@ class Item extends Model
     {
         return $this->belongsTo(Basket::class);
     }
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }
