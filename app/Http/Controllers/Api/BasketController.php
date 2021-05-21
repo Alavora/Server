@@ -107,17 +107,14 @@ class BasketController extends Controller
 
         $unit = Unit::findOrFail($request->unit_id);
 
-        $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->first();
 
 
-        if ($basket === null) {
-            $basket = new Basket;
-            // TODO: add user...
-            $basket->shop_id = $product->shop();
-            $basket->id = 1;
-            //dd("basket saved");
-            $basket->save();
-        }
+        $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->firstOrCreate([
+            'shop_id' => $product->shop_id,
+
+        ]);
+
+
 
         $item = new Item;
         $item->product_id = $product->id;
@@ -128,5 +125,25 @@ class BasketController extends Controller
         // dd($basket);
 
         $basket->items()->save($item);
+    }
+
+
+    public function getComment(Request $request)
+    {
+        $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->firstOrCreate([
+            'shop_id' => $request->shop_id,
+        ]);
+        return response()->json([
+            'data' => $basket->comment
+        ]);
+    }
+
+    public function postComment(Request $request)
+    {
+        $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->firstOrCreate([
+            'shop_id' => $request->shop_id,
+        ]);
+        $basket->comment = $request->comment;
+        return response()->json(['return' => True], 202);
     }
 }

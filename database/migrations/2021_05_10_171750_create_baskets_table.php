@@ -25,10 +25,10 @@ class CreateBasketsTable extends Migration
             $table->unsignedBigInteger('shop_id')->index();
             $table->foreign('shop_id')->references('id')->on('shops');
 
-            $table->unsignedBigInteger('user_id')->default(1)->index();
+            $table->unsignedBigInteger('user_id')->default(1)->index()->nullable();
             $table->foreign('user_id')->references('id')->on('users');
 
-            $table->unsignedBigInteger('distributor_id')->index();
+            $table->unsignedBigInteger('distributor_id')->index()->nullable();
             $table->foreign('distributor_id')->references('id')->on('users');
         });
     }
