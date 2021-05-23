@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Item;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,18 +12,24 @@ class CreateItemsTable extends Migration
      *
      * @return void
      */
+
+
+
     public function up()
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
 
-            $table->string('status');
-            $table->decimal('quantity', 10, 2);
+            $table->string('status')->default(Item::STATUS_UNCONFIRMED);
+            $table->decimal('quantity', 10, 2)->default(0);
             $table->decimal('price', 10, 2);
 
             $table->unsignedBigInteger('product_id')->index();
             $table->foreign('product_id')->references('id')->on('products');
+
+            $table->unsignedBigInteger('unit_id')->index();
+            $table->foreign('unit_id')->references('id')->on('units');
 
             $table->unsignedBigInteger('basket_id')->index();
             $table->foreign('basket_id')->references('id')->on('baskets');

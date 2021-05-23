@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UnitIndexResource extends JsonResource
+class UnitProductResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +17,11 @@ class UnitIndexResource extends JsonResource
         // return parent::toArray($request);
         return [
             'id' => $this->id,
-            'view' => $this->name,
+            'value' => $this->name,
             'viewValue' => $this->symbol,
+            'price' => $this->pivot->price,
+            'name' => $this->name,
+            'symbol' => $this->symbol,
         ];
     }
 }

@@ -24,8 +24,6 @@ class Product extends Model
 
     public function units()
     {
-        return $this->belongsToMany(Unit::class);
-        // return $this->hasMany(Items::class);
-        // return $this->hasMany(Unit::class);
+        return $this->belongsToMany(Unit::class)->withPivot('price');
     }
 }

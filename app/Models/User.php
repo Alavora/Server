@@ -6,10 +6,11 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens as SanctumHasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SanctumHasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -49,12 +50,11 @@ class User extends Authenticatable
 
     public function ownedShops()
     {
-        return $this->hasMany(Basket::class);
+        return $this->hasMany(Shop::class, 'shop_owner', 'owner_id', 'shop_id');
     }
 
     public function distributedBaskets()
     {
         return $this->hasMany(Basket::class);
     }
-
 }

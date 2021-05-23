@@ -22,6 +22,8 @@ class CreateProductUnitTable extends Migration
             // $table->foreign('market_id')->references('id')->on('markets');
             $table->foreign('unit_id')->references('id')->on('units');
             $table->foreign('product_id')->references('id')->on('products');
+
+            $table->decimal('price', 10, 2)->default(0);
         });
     }
 

@@ -18,7 +18,7 @@ class UnitsTableSeeder extends Seeder
             'kg' => 'Quilos',
             'gr' => 'Grams',
             'lt' => 'Litres',
-            'cl' => 'Centilítrs',
+            'cl' => 'Centilítres',
             'un' => 'Unitats',
             'dtz' => 'Dotzena',
         ];
