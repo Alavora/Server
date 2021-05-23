@@ -20,7 +20,7 @@ use Illuminate\Http\Response;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
 
 class BasketController extends Controller
 {
@@ -50,6 +50,7 @@ class BasketController extends Controller
      */
     public function store(Request $request)
     {
+        $user = $request->user();
         $data = $request->validate([
             /** TODO **/
             // "name" => 'required|min:3',
@@ -59,10 +60,8 @@ class BasketController extends Controller
             // // 'market_id' => ''
         ]);
 
-
-
         $basket = Basket::make($data);
-
+        $basket->user()->associate($user);
         $basket->save();
         return new BasketResource($basket);
     }
@@ -113,6 +112,7 @@ class BasketController extends Controller
      */
     public function addProduct(Request $request)
     {
+        $user = $request->user();
         $values = $request->validate([
             'quantity' => 'required|numeric',
             'product_id' => 'required|integer',
@@ -121,14 +121,32 @@ class BasketController extends Controller
         $product = Product::findOrFail($request->product_id);
 
         $unit = Unit::findOrFail($request->unit_id);
+        // DB::enableQueryLog();
 
+        $basket = Basket::where([
+            ['shop_id', $product->shop_id],
+            ['user_id', $user->id],
+            ['status', Basket::STATUS_UNCONFIRMED],
+            ['user_id', $user->id]
+        ])->first();
+        // $basket = Basket::firstOrCreate([
+        //     'shop_id' => $product->shop_id,
+        //     'user_id' => $user->id,
+        //     'status' => Basket::STATUS_UNCONFIRMED,
+        //     'user_id' => $user->id
+        // ]);
 
-
-        $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->where('user_id', $request->user())->firstOrCreate([
-            'shop_id' => $product->shop_id,
-        ]);
-
-
+        if ($basket == null) {
+            $data = [
+                'shop_id' => $product->shop_id,
+                'user_id' => $user->id,
+                'status' => Basket::STATUS_UNCONFIRMED,
+                'user_id' => $user->id
+            ];
+            $basket = Basket::make($data);
+            $basket->save();
+        }
+        // dd(DB::getQueryLog());
 
         $item = new Item;
         $item->product_id = $product->id;

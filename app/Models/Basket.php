@@ -9,7 +9,7 @@ class Basket extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['shop_id'];
+    protected $fillable = ['shop_id', 'user_id', 'status'];
 
     public const STATUS_UNCONFIRMED = 0;
     public const STATUS_CONFIRMED = 1;
@@ -24,5 +24,10 @@ class Basket extends Model
     public function shop()
     {
         return $this->belongsTo(Shop::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
