@@ -53,7 +53,7 @@ class ProductsTableSeeder extends Seeder
 
                     $units = [];
 
-                    while (count($units) == 0) {
+                    while (empty($units)) {
                         $all_units = Unit::all();
                         foreach ($all_units as $this_unit)
                             if (random_int(0, 3) == 3) { // 25% of times

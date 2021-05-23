@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     public function ownedShops()
     {
-        return $this->hasMany(Basket::class);
+        return $this->hasMany(Shop::class, 'shop_owner', 'owner_id', 'shop_id');
     }
 
     public function distributedBaskets()
