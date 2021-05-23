@@ -3,6 +3,7 @@
 use App\Models\Market;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,27 +16,35 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::apiResource("markets", "App\Http\Controllers\Api\MarketController")->only("index", "show", "store",);
-Route::apiResource("shops", "App\Http\Controllers\Api\ShopController")->only("index", "show", "store");
-Route::apiResource("products", "App\Http\Controllers\Api\ProductController")->only("index", "show", "store");
-Route::apiResource("units", "App\Http\Controllers\Api\UnitController")->only("index", "show", "store");
-Route::post("baskets/addproduct", "App\Http\Controllers\Api\BasketController@addProduct");
-Route::get("baskets/comment", "App\Http\Controllers\Api\BasketController@getComment");
-Route::post("baskets/comment", "App\Http\Controllers\Api\BasketController@postComment");
-Route::post("baskets/confirm", "App\Http\Controllers\Api\BasketController@confirm");
-Route::get("user/baskets", "App\Http\Controllers\Api\BasketController@shopsBaskets");
+
+// routes/api.php
+
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
+
+Route::apiResource("markets", "App\Http\Controllers\Api\MarketController")->only("index", "show", "store",)->middleware('auth:sanctum');
+Route::apiResource("shops", "App\Http\Controllers\Api\ShopController")->only("index", "show", "store")->middleware('auth:sanctum');
+Route::apiResource("products", "App\Http\Controllers\Api\ProductController")->only("index", "show", "store")->middleware('auth:sanctum');
+Route::apiResource("units", "App\Http\Controllers\Api\UnitController")->only("index", "show", "store")->middleware('auth:sanctum');
+Route::post("baskets/addproduct", "App\Http\Controllers\Api\BasketController@addProduct")->middleware('auth:sanctum');
+Route::get("baskets/comment", "App\Http\Controllers\Api\BasketController@getComment")->middleware('auth:sanctum');
+Route::post("baskets/comment", "App\Http\Controllers\Api\BasketController@postComment")->middleware('auth:sanctum');
+Route::post("baskets/confirm", "App\Http\Controllers\Api\BasketController@confirm")->middleware('auth:sanctum');
+Route::get("user/baskets", "App\Http\Controllers\Api\BasketController@shopsBaskets")->middleware('auth:sanctum');
 
 
 //Seller
-Route::get("seller/baskets", "App\Http\Controllers\Api\BasketController@index");
-// Route::get("baskets/items", "App\Http\Controllers\Api\BasketController@itemGet");
-Route::post("seller/baskets/items/confirm", "App\Http\Controllers\Api\BasketController@itemConfirm");
-Route::post("seller/baskets/items/update", "App\Http\Controllers\Api\BasketController@itemUpdate");
-Route::post("seller/baskets/confirm", "App\Http\Controllers\Api\BasketController@confirm");
+Route::get("seller/baskets", "App\Http\Controllers\Api\BasketController@index")->middleware('auth:sanctum');
+// Route::get("baskets/items", "App\Http\Controllers\Api\BasketController@itemGet")->middleware('auth:sanctum');
+Route::post("seller/baskets/items/confirm", "App\Http\Controllers\Api\BasketController@itemConfirm")->middleware('auth:sanctum');
+Route::post("seller/baskets/items/update", "App\Http\Controllers\Api\BasketController@itemUpdate")->middleware('auth:sanctum');
+Route::post("seller/baskets/confirm", "App\Http\Controllers\Api\BasketController@confirm")->middleware('auth:sanctum');
 
 
 

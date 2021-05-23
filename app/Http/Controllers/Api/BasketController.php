@@ -15,6 +15,13 @@ use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+
+
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+
+
 class BasketController extends Controller
 {
     /**
@@ -117,9 +124,8 @@ class BasketController extends Controller
 
 
 
-        $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->firstOrCreate([
+        $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->where('user_id', $request->user())->firstOrCreate([
             'shop_id' => $product->shop_id,
-
         ]);
 
 
@@ -205,13 +211,13 @@ class BasketController extends Controller
     {
         $data = $request->validate([
             /** TODO **/
-            "user_id" => 'required|integer',
+            //            "user_id" => 'required|integer',
             // "description" => 'required|min:3',
             // "cif" => 'required|min:3',
             // 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             // // 'market_id' => ''
         ]);
-        return ShopsBasketsResource::collection(Basket::where('user_id', $data['user_id'])->get());
+        return ShopsBasketsResource::collection(Basket::where('user_id', $request->user())->get());
     }
 
 
