@@ -27,32 +27,63 @@ class ProductController extends Controller
             'price' => 'required',
             'shop_id' => 'required',
             'units' => 'array|required',
+            'units.*' => [
+                'required',
+            ],
         ]);
 
         $shop = Shop::findOrFail($request->shop_id);
 
-        // $image_name = $request->file('image')->getClientOriginalName();
-        // $path = $request->file('image')->store('public/images');
-
-        $units = collect([]);
-        while ($unit_id = array_pop($data['units'])) {
-            $unit = Unit::findOrFail($unit_id);
-            $units->add($unit);
-        }
+        // $units = collect([]);
+        // while ($unit_id = array_pop($data['units'])) {
+        //     $unit = Unit::findOrFail($unit_id);
+        //     $units->add($unit);
+        // }
 
         $product = Product::create($data);
-        $product->units = $units;
+        // $product->units = $units;
 
         // $product->image_path = $path;
         // $product->image_name = $image_name;
-        $product->shop()->associate($shop);
+        //$product->shop()->associate($shop);
+
         $product->save();
+        $product->units()->sync($this->mapUnits($data['units']));
         return new ProductResource($shop);
     }
+
+    public function update(Request $request, Product $product)
+    {
+        $data = $request->validate([
+            'name' => 'required|min:3',
+            'image_url' => '',
+            'price' => 'required',
+            'shop_id' => 'required',
+            'units' => 'array|required',
+            'units.*' => [
+                'required',
+            ],
+        ]);
+
+        $shop = Shop::findOrFail($product->shop_id);
+
+        $product->update($data);
+        $product->units()->sync($this->mapUnits($data['units']));
+        return response(null, 204);
+    }
+
 
     public function delete($shop_id)
     {
         Shop::deleted($shop_id);
         return response(null, 204);
+    }
+
+    private function mapUnits($units)
+    {
+        // dd($units);
+        return collect($units)->map(function ($i) {
+            return ['price' => $i];
+        });
     }
 }

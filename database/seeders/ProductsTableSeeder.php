@@ -40,7 +40,6 @@ class ProductsTableSeeder extends Seeder
      */
     public function run()
     {
-
         Shop::all()->each(function (Shop $shop, $demo_products) {
             $products = collect([]);
             $demo_data = $this->demo_products();
@@ -51,17 +50,31 @@ class ProductsTableSeeder extends Seeder
                     $product->price = random_int(1, 9999) / 100;
                     $product->shop_id = $shop->id;
                     $product->save();
-                    $units_symbol = explode(',', $units);
-                    $units = collect([]);
-                    foreach ($units_symbol as $unit_symbol) {
-                        // dd($unit_symbol);
-                        $unit = Unit::firstWhere('symbol', $unit_symbol);
-                        //dd($unit->id);
-                        // $units->push($unit);
-                        $product->units()->attach($unit->id);
+
+                    $units = [];
+
+                    while (count($units) == 0) {
+                        $all_units = Unit::all();
+                        foreach ($all_units as $this_unit)
+                            if (random_int(0, 3) == 3) { // 25% of times
+                                $units[$this_unit->id] = $product->price = random_int(1, 9999) / 100;
+                            }
                     }
+
+                    $product->units()->sync($this->mapUnits($units));
+
+                    // $units_symbol = explode(',', $units);
+                    // $units = collect([]);
+                    // foreach ($units_symbol as $unit_symbol) {
+                    //     // dd($unit_symbol);
+                    //     $unit = Unit::firstWhere('symbol', $unit_symbol);
+                    //     //dd($unit->id);
+                    //     // $units->push($unit);
+                    //     $unit->price = random_int(1, 9999) / 100;
+                    //     $product->units()->attach($unit->id);
+                    // }
                     // dd(count($units));
-                    $product->units()->saveMany($units);
+                    // $product->units()->saveMany($units);
                     // $product->save();
 
                 }
@@ -71,6 +84,13 @@ class ProductsTableSeeder extends Seeder
             // dd($shops);
             $shop->products()->saveMany($products);
             // $shop->save();
+        });
+    }
+    private function mapUnits($units)
+    {
+        // dd($units);
+        return collect($units)->map(function ($i) {
+            return ['price' => $i];
         });
     }
 }

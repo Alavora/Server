@@ -213,4 +213,17 @@ class BasketController extends Controller
         ]);
         return ShopsBasketsResource::collection(Basket::where('user_id', $data['user_id'])->get());
     }
+
+
+    // public function confirm(Request $request)
+    // {
+    //     $basket = Basket::get($request->shop_id);
+    //     if ($basket !== null) {
+    //         $basket->status = Basket::STATUS_READY;
+    //         $basket->save();
+    //         return response()->noContent(); // 204
+    //     } else {
+    //         return abort(404);
+    //     }
+    // }
 }

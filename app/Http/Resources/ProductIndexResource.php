@@ -24,7 +24,7 @@ class ProductIndexResource extends JsonResource
             "image_url" => $this->image_url,
             "price" => $this->price,
             "shop_id" => $this->shop_id,
-            "units" => UnitIndexResource::collection($this->units),
+            "units" => UnitProductResource::collection($this->units),
             // "units" => $this->units,
         ];
     }

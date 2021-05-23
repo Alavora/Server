@@ -35,6 +35,7 @@ Route::get("seller/baskets", "App\Http\Controllers\Api\BasketController@index");
 // Route::get("baskets/items", "App\Http\Controllers\Api\BasketController@itemGet");
 Route::post("seller/baskets/items/confirm", "App\Http\Controllers\Api\BasketController@itemConfirm");
 Route::post("seller/baskets/items/update", "App\Http\Controllers\Api\BasketController@itemUpdate");
+Route::post("seller/baskets/confirm", "App\Http\Controllers\Api\BasketController@confirm");
 
 
 
