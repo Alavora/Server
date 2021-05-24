@@ -42,6 +42,35 @@ class BasketController extends Controller
         return BasketIndexResource::collection(Basket::where('shop_id', $data['shop_id'])->get());
     }
 
+    public function indexSeller(Request $request)
+    {
+        $user = Auth::user();
+        // return ShopIndexResource::collection(Shop::whereHas('sellers', function ($q) use ($user) {
+        //     $q->where('owner_id', '=', $user->id);
+        // })->get());
+
+        // return BasketIndexResource::collection(Basket::has('items')->has('product')->has('shop')->whereHas('sellers', function ($q) use ($user) {
+        //     $q->where('owner_id', '=', $user->id);
+        // })->get());
+
+        DB::enableQueryLog();
+
+
+        $baskets = collect();
+        $shops = Shop::whereHas('sellers', function ($q) use ($user) {
+            $q->where('owner_id', '=', $user->id);
+        })->get();
+
+        foreach ($shops as $shop) {
+            print("shop_id: " . $shop->id);
+            $baskets->merge(Basket::where([['shop_id', $shop->id], ['status', Basket::STATUS_CONFIRMED]]));
+        }
+        dd(DB::getQueryLog());
+
+
+        return BasketIndexResource::collection($baskets);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -50,7 +79,7 @@ class BasketController extends Controller
      */
     public function store(Request $request)
     {
-        $user = $request->user();
+        $user = Auth::user();
         $data = $request->validate([
             /** TODO **/
             // "name" => 'required|min:3',
@@ -112,7 +141,7 @@ class BasketController extends Controller
      */
     public function addProduct(Request $request)
     {
-        $user = $request->user();
+        $user = Auth::user();
         $values = $request->validate([
             'quantity' => 'required|numeric',
             'product_id' => 'required|integer',
@@ -227,6 +256,7 @@ class BasketController extends Controller
      */
     public function shopsBaskets(Request $request)
     {
+        $user = Auth::user();
         $data = $request->validate([
             /** TODO **/
             //            "user_id" => 'required|integer',
@@ -235,7 +265,7 @@ class BasketController extends Controller
             // 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             // // 'market_id' => ''
         ]);
-        return ShopsBasketsResource::collection(Basket::where('user_id', $request->user())->get());
+        return ShopsBasketsResource::collection(Basket::where('user_id', $user->id)->get());
     }
 
 

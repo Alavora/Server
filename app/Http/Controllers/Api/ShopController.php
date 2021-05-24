@@ -8,6 +8,7 @@ use App\Http\Resources\ShopResource;
 use App\Models\Market;
 use App\Models\Shop;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ShopController extends Controller
 {
@@ -21,6 +22,17 @@ class ShopController extends Controller
             return ShopIndexResource::collection(Shop::all());
         }
     }
+
+
+    public function indexSeller(Request $request)
+    {
+        $user = Auth::user();
+
+        return ShopIndexResource::collection(Shop::whereHas('sellers', function ($q) use ($user) {
+            $q->where('owner_id', '=', $user->id);
+        })->get());
+    }
+
 
     public function store(Request $request)
     {

@@ -15,12 +15,12 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             $user = User::factory()->make();
             $user->email = "seller" . $i . "@example.com";
             $user->save();
         }
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 1; $i <= 30; $i++) {
             $user = User::factory()->make();
             $user->email = "client" . $i . "@example.com";
             $user->save();
