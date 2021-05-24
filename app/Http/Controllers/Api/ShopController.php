@@ -62,12 +62,16 @@ class ShopController extends Controller
     public function delete($shop_id)
     {
         Shop::deleted($shop_id);
-        return response(null, 204);
+        return response()->json([
+            'successful' => true,
+        ]);
     }
 
     public function show($shop_id)
     {
 
-        return response(null, 204);
+        return response()->json([
+            'successful' => true,
+        ]);
     }
 }
