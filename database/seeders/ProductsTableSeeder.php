@@ -51,32 +51,16 @@ class ProductsTableSeeder extends Seeder
                     $product->shop_id = $shop->id;
                     $product->save();
 
-                    $units = [];
+                    $units = explode(',', $units);
 
-                    while (empty($units)) {
-                        $all_units = Unit::all();
-                        foreach ($all_units as $this_unit)
-                            if (random_int(0, 3) == 3) { // 25% of times
-                                $units[$this_unit->id] = $product->price = random_int(1, 9999) / 100;
-                            }
+                    $product_units = [];
+                    foreach ($units as $unit) {
+                        $u = Unit::Where('symbol', $unit)->first();
+                        // dd($u);
+                        $product_units[$u->id] = random_int(1, 9999) / 100;
                     }
 
-                    $product->units()->sync($this->mapUnits($units));
-
-                    // $units_symbol = explode(',', $units);
-                    // $units = collect([]);
-                    // foreach ($units_symbol as $unit_symbol) {
-                    //     // dd($unit_symbol);
-                    //     $unit = Unit::firstWhere('symbol', $unit_symbol);
-                    //     //dd($unit->id);
-                    //     // $units->push($unit);
-                    //     $unit->price = random_int(1, 9999) / 100;
-                    //     $product->units()->attach($unit->id);
-                    // }
-                    // dd(count($units));
-                    // $product->units()->saveMany($units);
-                    // $product->save();
-
+                    $product->units()->sync($this->mapUnits($product_units));
                 }
             }
 
