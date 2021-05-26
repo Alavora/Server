@@ -69,14 +69,18 @@ class ProductController extends Controller
 
         $product->update($data);
         $product->units()->sync($this->mapUnits($data['units']));
-        return response(null, 204);
+        return response()->json([
+            'successful' => true,
+        ]);
     }
 
 
     public function delete($shop_id)
     {
         Shop::deleted($shop_id);
-        return response(null, 204);
+        return response()->json([
+            'successful' => true,
+        ]);
     }
 
     private function mapUnits($units)

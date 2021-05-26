@@ -49,6 +49,15 @@ class AuthController extends Controller
         ]);
     }
 
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        return response()->json([
+            'logged_out' => Auth::check(),
+        ]);
+    }
+
     public function me(Request $request)
     {
         return $request->user();

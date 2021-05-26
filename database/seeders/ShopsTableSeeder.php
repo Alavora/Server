@@ -28,7 +28,8 @@ class ShopsTableSeeder extends Seeder
             $market->shops()->saveMany($shops);
         });
         Shop::all()->each(function (Shop $shop) {
-            $seller = User::where('email', 'like', 'seller%')->orderByRaw('RAND()')->first();
+            $random_method = (ENV('DB_CONNECTION') == 'sqlite' ? "RANDOM()" : "RAND()");
+            $seller = User::where('email', 'like', 'seller%')->orderByRaw($random_method)->first();
 
             $shop->sellers()->attach($seller);
         });

@@ -45,6 +45,8 @@ class UnitController extends Controller
     public function delete($unit_id)
     {
         Unit::deleted($unit_id);
-        return response(null, 204);
+        return response()->json([
+            'successful' => true,
+        ]);
     }
 }
