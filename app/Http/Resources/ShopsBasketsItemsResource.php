@@ -6,7 +6,7 @@ use App\Models\Product;
 use App\Models\Unit;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ItemResource extends JsonResource
+class ShopsBasketsItemsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,7 +16,6 @@ class ItemResource extends JsonResource
      */
     public function toArray($request)
     {
-        // return parent::toArray($request);
         return [
             "id" => $this->id, // 1,
             // "created_at" => $this-> , // "2021-05-21T13:54:06.000000Z",
@@ -30,7 +29,6 @@ class ItemResource extends JsonResource
             "unit_id" => $this->unit_id, // 1,
             "unit_symbol" => Unit::findOrFail($this->unit_id)->symbol,
             "units" => UnitIndexResource::collection(Product::findOrFail($this->product_id)->units),
-            "basket_id" => $this->basket_id, // 1
         ];
     }
 }

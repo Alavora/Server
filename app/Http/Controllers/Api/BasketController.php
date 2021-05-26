@@ -147,9 +147,9 @@ class BasketController extends Controller
             'product_id' => 'required|integer',
             'unit_id' => 'required|integer',
         ]);
-        $product = Product::findOrFail($request->product_id);
+        $product = Product::findOrFail($values['product_id']);
 
-        $unit = Unit::findOrFail($request->unit_id);
+        $unit = Unit::findOrFail($values['unit_id']);
         // DB::enableQueryLog();
 
         $basket = Basket::where([
@@ -158,12 +158,6 @@ class BasketController extends Controller
             ['status', Basket::STATUS_UNCONFIRMED],
             ['user_id', $user->id]
         ])->first();
-        // $basket = Basket::firstOrCreate([
-        //     'shop_id' => $product->shop_id,
-        //     'user_id' => $user->id,
-        //     'status' => Basket::STATUS_UNCONFIRMED,
-        //     'user_id' => $user->id
-        // ]);
 
         if ($basket == null) {
             $data = [
@@ -177,15 +171,29 @@ class BasketController extends Controller
         }
         // dd(DB::getQueryLog());
 
-        $item = new Item;
-        $item->product_id = $product->id;
-        $item->unit_id = $unit->id;
-        $item->price = $product->price;
 
-
-        // dd($basket);
-
-        $basket->items()->save($item);
+        $item = Item::where([
+            'product_id' => $values['product_id'],
+            'basket_id' => $basket->id,
+        ])->first();
+        if ($values['quantity'] == 0) {
+            if (!empty($item)) {
+                $item->delete();
+            }
+        } else {
+            if (empty($item)) {
+                $item = new Item;
+                $item->product_id = $product->id;
+                $item->unit_id = $unit->id;
+                $item->quantity = $values['quantity'];
+                $item->price = $product->price;
+            } else {
+                $item->unit_id = $unit->id;
+                $item->quantity = $values['quantity'];
+                $item->price = $product->price;
+            }
+            $basket->items()->save($item);
+        }
     }
 
 
