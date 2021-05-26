@@ -20,7 +20,7 @@ class ShopIndexResource extends JsonResource
             'name' => $this->name,
             'cif' => $this->cif,
             'image' => $this->image_path . $this->image_name,
-            'market_id' => $this->market,
+            'market' => new MarketResource($this->market),
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
             'address' => $this->address,

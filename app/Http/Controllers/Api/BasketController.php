@@ -226,7 +226,9 @@ class BasketController extends Controller
         ]);
         $basket->status = Basket::STATUS_CONFIRMED;
         $basket->save();
-        return response()->noContent(); // 204
+        return response()->json([
+            'successful' => true,
+        ]);
     }
 
     public function itemConfirm(Request $request)
@@ -238,7 +240,9 @@ class BasketController extends Controller
 
         $item->status = Item::STATUS_CONFIRMED;
         $item->save();
-        return response()->noContent(); // 204
+        return response()->json([
+            'successful' => true,
+        ]);
     }
 
     public function itemUpdate(Request $request)
