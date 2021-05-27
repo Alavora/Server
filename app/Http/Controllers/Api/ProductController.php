@@ -7,7 +7,7 @@ use App\Http\Resources\ProductIndexResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\Shop;
-use App\Models\Unit;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +19,12 @@ class ProductController extends Controller
         return ProductIndexResource::collection(Product::all()->Where("shop_id", $request->shop_id));
     }
 
-
+    /**
+     * Stores a new product, after checking the user has access to the shop.
+     *
+     * @param Request $request containing: name, shop_id, and units (which is an array where units[unit_id]=price)
+     * @return JsonResponse with the new product data
+     */
     public function store(Request $request)
     {
         $user = Auth::user();
@@ -55,6 +60,7 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        $user = Auth::user();
         $data = $request->validate([
             'name' => 'required|min:3',
             'image_url' => '',
@@ -68,17 +74,26 @@ class ProductController extends Controller
 
         $shop = Shop::findOrFail($product->shop_id);
 
+        $seller = $shop->sellers()->findOrFail($user->id);
+
         $product->update($data);
         $product->units()->sync($this->mapUnits($data['units']));
         return response()->json([
             'successful' => true,
+            'product' => new ProductResource($product),
         ]);
     }
 
 
-    public function delete($shop_id)
+    public function destroy(Product $product)
     {
-        Shop::deleted($shop_id);
+        $user = Auth::user();
+        $owner = Shop::findOrFail($product->shop_id)->sellers()->find($user->id);
+        if (empty($owner)) {
+            return response()->json(['status_message' => 'Unauthorised'], 401);
+        }
+        $product->units()->detach();
+        $product->delete();
         return response()->json([
             'successful' => true,
         ]);

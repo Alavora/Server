@@ -52,8 +52,10 @@ Route::post("baskets/addproduct", "App\Http\Controllers\Api\BasketController@add
 //Returns: a list of all baskets and products in them, and shop info
 Route::get("baskets/all", "App\Http\Controllers\Api\BasketController@shopsBaskets")->middleware('auth:sanctum');
 
-
-Route::apiResource("products", "App\Http\Controllers\Api\ProductController")->only("index", "show", "store")->middleware('auth:sanctum');
+//GET: returns a list of all products, it expects as a parameter shop_id to list only one shop products
+//POST: 
+// Route::apiResource("products", "App\Http\Controllers\Api\ProductController")->only(["index", "show", "store", "update"])->middleware('auth:sanctum');
+Route::apiResource("products", "App\Http\Controllers\Api\ProductController")->middleware('auth:sanctum');
 Route::apiResource("units", "App\Http\Controllers\Api\UnitController")->only("index", "show", "store")->middleware('auth:sanctum');
 Route::post("baskets/addproduct", "App\Http\Controllers\Api\BasketController@addProduct")->middleware('auth:sanctum');
 Route::get("baskets/comment", "App\Http\Controllers\Api\BasketController@getComment")->middleware('auth:sanctum');
