@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\Shop;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -21,6 +22,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::user();
         $data = $request->validate([
             'name' => 'required|min:3',
             'image_url' => '',
@@ -34,11 +36,8 @@ class ProductController extends Controller
 
         $shop = Shop::findOrFail($request->shop_id);
 
-        // $units = collect([]);
-        // while ($unit_id = array_pop($data['units'])) {
-        //     $unit = Unit::findOrFail($unit_id);
-        //     $units->add($unit);
-        // }
+        //check if user is owner of the shop
+        $seller = $shop->sellers()->findOrFail($user->id);
 
         $product = Product::create($data);
         // $product->units = $units;
@@ -48,8 +47,10 @@ class ProductController extends Controller
         //$product->shop()->associate($shop);
 
         $product->save();
+        // dd($this->mapUnits($data['units']));
+
         $product->units()->sync($this->mapUnits($data['units']));
-        return new ProductResource($shop);
+        return new ProductResource($product);
     }
 
     public function update(Request $request, Product $product)
