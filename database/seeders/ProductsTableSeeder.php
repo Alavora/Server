@@ -47,7 +47,6 @@ class ProductsTableSeeder extends Seeder
                 if (random_int(0, 2) > 0) { // 66% of times
                     $product = Product::factory()->make();
                     $product->name = $name;
-                    $product->price = random_int(1, 9999) / 100;
                     $product->shop_id = $shop->id;
                     $product->save();
 
@@ -57,7 +56,7 @@ class ProductsTableSeeder extends Seeder
                     foreach ($units as $unit) {
                         $u = Unit::Where('symbol', $unit)->first();
                         // dd($u);
-                        $product_units[$u->id] = random_int(1, 9999) / 100;
+                        $product_units[$u->id] = random_int(1, 999) / 100;
                     }
 
                     $product->units()->sync($this->mapUnits($product_units));

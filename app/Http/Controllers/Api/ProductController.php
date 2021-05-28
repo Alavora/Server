@@ -31,7 +31,6 @@ class ProductController extends Controller
         $data = $request->validate([
             'name' => 'required|min:3',
             'image_url' => '',
-            'price' => '',
             'shop_id' => 'required',
             'units' => 'array|required',
             'units.*' => [

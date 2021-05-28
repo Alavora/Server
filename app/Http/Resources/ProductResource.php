@@ -18,12 +18,8 @@ class ProductResource extends JsonResource
         return [
             "id" => $this->id,
             "name" => $this->name,
-            "price" => $this->price,
-            // "shop" => new ShopResource($this->shop),
             "shop" => new ShopResource($this->shop),
             "units" => $this->units,
-            // "units" => new UnitProductResource($this->units),
-            // "units" => new UnitResource($this->units),
         ];
     }
 }

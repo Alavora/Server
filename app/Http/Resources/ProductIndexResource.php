@@ -18,14 +18,10 @@ class ProductIndexResource extends JsonResource
         // return parent::toArray($request);
         return [
             "id" => $this->id,
-            // "created_at" => $this-> ,
-            // "updated_at" => $this-> ,
             "name" => $this->name,
             "image_url" => $this->image_url,
-            "price" => $this->price,
             "shop_id" => $this->shop_id,
             "units" => UnitProductResource::collection($this->units),
-            // "units" => $this->units,
         ];
     }
 }
