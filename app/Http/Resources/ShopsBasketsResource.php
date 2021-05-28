@@ -17,9 +17,10 @@ class ShopsBasketsResource extends JsonResource
         // return parent::toArray($request);
         return [
             'basket_id' => $this->id,
-            "shop_name" => $this->shop->name,
-            "shop_id" => $this->shop->id,
-            "items" => ShopsBasketsItemsResource::collection($this->items),
+            'shop_name' => $this->shop->name,
+            'shop_id' => $this->shop->id,
+            'status' => $this->status,
+            'items' => ShopsBasketsItemsResource::collection($this->items),
         ];
     }
 }

@@ -23,7 +23,7 @@ class ShopsBasketsItemsResource extends JsonResource
             "status" => $this->status, // "0",
             "quantity" => $this->quantity, // "0.00",
             "price" => $this->price, // "40.03",
-            "total_price" => $this->price * $this->quantity, // "40.03",
+            "total_price" => number_format($this->price * $this->quantity, 2), // "40.03",
             "product_id" => $this->product_id, // 1,
             "product_name" => Product::findOrFail($this->product_id)->name, // 1,
             "unit_id" => $this->unit_id, // 1,
