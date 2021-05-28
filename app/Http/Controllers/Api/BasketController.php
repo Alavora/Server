@@ -7,10 +7,10 @@ use App\Http\Resources\BasketIndexResource;
 use App\Http\Resources\BasketResource;
 use App\Http\Resources\BasketShowResource;
 use App\Http\Resources\ShopsBasketsResource;
+use App\Http\Resources\UnitResource;
 use App\Models\Basket;
 use App\Models\Item;
 use App\Models\Product;
-use App\Models\Shop;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -135,7 +135,7 @@ class BasketController extends Controller
         ]);
         $product = Product::findOrFail($values['product_id']);
 
-        $unit = Unit::findOrFail($values['unit_id']);
+        $unit = $product->units()->findOrFail($values['unit_id']);
         // DB::enableQueryLog();
 
         $basket = Basket::where([
@@ -172,11 +172,11 @@ class BasketController extends Controller
                 $item->product_id = $product->id;
                 $item->unit_id = $unit->id;
                 $item->quantity = $values['quantity'];
-                $item->price = $product->price;
+                $item->price = $unit->pivot->price;
             } else {
                 $item->unit_id = $unit->id;
                 $item->quantity = $values['quantity'];
-                $item->price = $product->price;
+                $item->price = $unit->pivot->price;
             }
             $basket->items()->save($item);
         }
@@ -261,9 +261,27 @@ class BasketController extends Controller
 
     public function itemUpdate(Request $request)
     {
+        $user = Auth::user();
         $data = $request->validate([
-            "item_id" => 'required|integer',
+            'item_id' => 'required|unique:items',
+            'quantity' => 'required|numeric',
+            'product_id' => 'required|integer',
+            'unit_id' => 'required|integer',
         ]);
+
+        //check if user has access to item
+        $item = Basket::whereHas(
+            'product.shop.sellers',
+            function (Builder $query) use ($user) {
+                $query->where('user_id', $user->id);
+            }
+
+        )->firstOrFail();
+        $unit = Unit::findOrFail($data['unit_id']);
+        $item->unit_id = $unit->id;
+        $item->quantity = $data['quantity'];
+        $item->price = $unit->price;
+        $item->save();
     }
 
     /**

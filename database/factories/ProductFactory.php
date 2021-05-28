@@ -24,7 +24,6 @@ class ProductFactory extends Factory
         return [
             'name' => '',
             'image_url' => '',
-            'price' => 0.0,
         ];
     }
 }

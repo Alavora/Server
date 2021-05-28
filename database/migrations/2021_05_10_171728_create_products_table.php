@@ -19,7 +19,7 @@ class CreateProductsTable extends Migration
 
             $table->string('name');
             $table->string('image_url')->nullable();
-            $table->decimal('price', 10, 2)->default(0);
+            // $table->decimal('price', 10, 2)->default(0);
 
             $table->unsignedBigInteger('shop_id')->index();
             $table->foreign('shop_id')->references('id')->on('shops');

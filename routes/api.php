@@ -70,9 +70,11 @@ Route::get("user/baskets", "App\Http\Controllers\Api\BasketController@shopsBaske
 
 //Returns logged seller shops. No parameters needed
 Route::get("seller/shops", "App\Http\Controllers\Api\ShopController@indexSeller")->middleware('auth:sanctum');
+//Get confirmet baskets for seller's shops
 Route::get("seller/baskets", "App\Http\Controllers\Api\BasketController@indexSeller")->middleware('auth:sanctum');
 // Route::get("baskets/items", "App\Http\Controllers\Api\BasketController@itemGet")->middleware('auth:sanctum');
-Route::post("seller/baskets/items/confirm", "App\Http\Controllers\Api\BasketController@itemConfirm")->middleware('auth:sanctum');
+
+//Recive Item info (including status) and update it.
 Route::post("seller/baskets/items/update", "App\Http\Controllers\Api\BasketController@itemUpdate")->middleware('auth:sanctum');
 Route::post("seller/baskets/confirm", "App\Http\Controllers\Api\BasketController@confirm")->middleware('auth:sanctum');
 
