@@ -40,7 +40,7 @@ class ProductsTableSeeder extends Seeder
      */
     public function run()
     {
-        Shop::all()->each(function (Shop $shop, $demo_products) {
+        Shop::all()->each(function (Shop $shop) {
             $products = collect([]);
             $demo_data = $this->demo_products();
             foreach ($demo_data as $name => $units) {

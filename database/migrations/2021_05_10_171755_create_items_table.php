@@ -23,15 +23,15 @@ class CreateItemsTable extends Migration
 
             $table->string('status')->default(Item::STATUS_UNCONFIRMED);
             $table->decimal('quantity', 10, 2)->default(0);
-            $table->decimal('price', 10, 2);
+            $table->decimal('price', 10, 2)->default(0);
 
             $table->unsignedBigInteger('product_id')->index();
             $table->foreign('product_id')->references('id')->on('products');
 
-            $table->unsignedBigInteger('unit_id')->index();
+            $table->unsignedBigInteger('unit_id')->index()->default(0);
             $table->foreign('unit_id')->references('id')->on('units');
 
-            $table->unsignedBigInteger('basket_id')->index();
+            $table->unsignedBigInteger('basket_id')->index()->default(0);
             $table->foreign('basket_id')->references('id')->on('baskets');
         });
     }

@@ -44,11 +44,19 @@ Route::apiResource("markets", "App\Http\Controllers\Api\MarketController")->only
 //Retuns: market's shop, a json with id, name, cif, market_id
 Route::get("shops", "App\Http\Controllers\Api\ShopController@index")->middleware('auth:sanctum');
 
+//parameters: quantity, product_id, unit_id
+//Returns: nothing, it adds a new item, update it if it was there; or delete it if quantity is zero
+Route::post("baskets/addproduct", "App\Http\Controllers\Api\BasketController@addProduct")->middleware('auth:sanctum');
 
+//parameters: none
+//Returns: a list of all baskets and products in them, and shop info
+Route::get("baskets/all", "App\Http\Controllers\Api\BasketController@shopsBaskets")->middleware('auth:sanctum');
 
-Route::apiResource("products", "App\Http\Controllers\Api\ProductController")->only("index", "show", "store")->middleware('auth:sanctum');
+//GET: returns a list of all products, it expects as a parameter shop_id to list only one shop products
+//POST: 
+// Route::apiResource("products", "App\Http\Controllers\Api\ProductController")->only(["index", "show", "store", "update"])->middleware('auth:sanctum');
+Route::apiResource("products", "App\Http\Controllers\Api\ProductController")->middleware('auth:sanctum');
 Route::apiResource("units", "App\Http\Controllers\Api\UnitController")->only("index", "show", "store")->middleware('auth:sanctum');
-Route::get("user/baskets", "App\Http\Controllers\Api\BasketController@shopsBaskets")->middleware('auth:sanctum');
 Route::post("baskets/addproduct", "App\Http\Controllers\Api\BasketController@addProduct")->middleware('auth:sanctum');
 Route::get("baskets/comment", "App\Http\Controllers\Api\BasketController@getComment")->middleware('auth:sanctum');
 Route::post("baskets/comment", "App\Http\Controllers\Api\BasketController@postComment")->middleware('auth:sanctum');

@@ -18,7 +18,7 @@ use Illuminate\Http\Response;
 
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -45,29 +45,15 @@ class BasketController extends Controller
     public function indexSeller(Request $request)
     {
         $user = Auth::user();
-        // return ShopIndexResource::collection(Shop::whereHas('sellers', function ($q) use ($user) {
-        //     $q->where('owner_id', '=', $user->id);
-        // })->get());
+        // DB::enableQueryLog();
+        $baskets = Basket::where("status", "=", Basket::STATUS_CONFIRMED)->whereHas(
+            'shop.sellers',
+            function (Builder $query) use ($user) {
+                $query->where('user_id', $user->id);
+            }
 
-        // return BasketIndexResource::collection(Basket::has('items')->has('product')->has('shop')->whereHas('sellers', function ($q) use ($user) {
-        //     $q->where('owner_id', '=', $user->id);
-        // })->get());
-
-        DB::enableQueryLog();
-
-
-        $baskets = collect();
-        $shops = Shop::whereHas('sellers', function ($q) use ($user) {
-            $q->where('owner_id', '=', $user->id);
-        })->get();
-
-        foreach ($shops as $shop) {
-            print("shop_id: " . $shop->id);
-            $baskets->merge(Basket::where([['shop_id', $shop->id], ['status', Basket::STATUS_CONFIRMED]]));
-        }
-        dd(DB::getQueryLog());
-
-
+        )->get();
+        // dd(DB::getQueryLog());
         return BasketIndexResource::collection($baskets);
     }
 
@@ -147,9 +133,9 @@ class BasketController extends Controller
             'product_id' => 'required|integer',
             'unit_id' => 'required|integer',
         ]);
-        $product = Product::findOrFail($request->product_id);
+        $product = Product::findOrFail($values['product_id']);
 
-        $unit = Unit::findOrFail($request->unit_id);
+        $unit = Unit::findOrFail($values['unit_id']);
         // DB::enableQueryLog();
 
         $basket = Basket::where([
@@ -158,12 +144,6 @@ class BasketController extends Controller
             ['status', Basket::STATUS_UNCONFIRMED],
             ['user_id', $user->id]
         ])->first();
-        // $basket = Basket::firstOrCreate([
-        //     'shop_id' => $product->shop_id,
-        //     'user_id' => $user->id,
-        //     'status' => Basket::STATUS_UNCONFIRMED,
-        //     'user_id' => $user->id
-        // ]);
 
         if ($basket == null) {
             $data = [
@@ -177,36 +157,68 @@ class BasketController extends Controller
         }
         // dd(DB::getQueryLog());
 
-        $item = new Item;
-        $item->product_id = $product->id;
-        $item->unit_id = $unit->id;
-        $item->price = $product->price;
 
-
-        // dd($basket);
-
-        $basket->items()->save($item);
+        $item = Item::where([
+            'product_id' => $values['product_id'],
+            'basket_id' => $basket->id,
+        ])->first();
+        if ($values['quantity'] == 0) {
+            if (!empty($item)) {
+                $item->delete();
+            }
+        } else {
+            if (empty($item)) {
+                $item = new Item;
+                $item->product_id = $product->id;
+                $item->unit_id = $unit->id;
+                $item->quantity = $values['quantity'];
+                $item->price = $product->price;
+            } else {
+                $item->unit_id = $unit->id;
+                $item->quantity = $values['quantity'];
+                $item->price = $product->price;
+            }
+            $basket->items()->save($item);
+        }
     }
 
-
+    /**
+     * Returns the comment for a user/shop. This comment will belong to an unconfirmed basket. If the user has
+     * no unconfirmed basket for the shop, the basket will be created with an empty message.
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getComment(Request $request)
     {
+        $user = Auth::user();
         $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->firstOrCreate([
             'shop_id' => $request->shop_id,
+            'user_id' => $user->id,
         ]);
+
         return response()->json([
             'data' => $basket->comments
         ]);
     }
 
+    /**
+     * Replaces the comment in an unconfirmed basket for a user. If the user has no unconfirmed basket for the
+     * shop, it will be created and the message attatched to it.
+     *
+     * @param Request $request
+     * @return void
+     */
     public function postComment(Request $request)
     {
+        $user = Auth::user();
         $values = $request->validate([
             'comments' => 'required',
             'shop_id' => 'required|integer',
         ]);
         $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->firstOrCreate([
             'shop_id' => $request->shop_id,
+            'user_id' => $user->id,
         ]);
         $basket->comments = $values['comments'];
         $basket->save();
@@ -221,8 +233,10 @@ class BasketController extends Controller
      */
     public function confirm(Request $request)
     {
+        $user = Auth::user();
         $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->firstOrCreate([
             'shop_id' => $request->shop_id,
+            'user_id' => $user->id,
         ]);
         $basket->status = Basket::STATUS_CONFIRMED;
         $basket->save();

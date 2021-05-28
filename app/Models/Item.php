@@ -10,6 +10,8 @@ class Item extends Model
 
     use HasFactory;
 
+    protected $fillable = ['shop_id',  'status', 'product_id', 'unit_id'];
+
     public const STATUS_UNCONFIRMED = 0;
     public const STATUS_CONFIRMED = 1;
     public const STATUS_PREPARING = 2;
