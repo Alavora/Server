@@ -18,7 +18,7 @@ use Illuminate\Http\Response;
 
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -45,29 +45,15 @@ class BasketController extends Controller
     public function indexSeller(Request $request)
     {
         $user = Auth::user();
-        // return ShopIndexResource::collection(Shop::whereHas('sellers', function ($q) use ($user) {
-        //     $q->where('owner_id', '=', $user->id);
-        // })->get());
+        // DB::enableQueryLog();
+        $baskets = Basket::where("status", "=", Basket::STATUS_CONFIRMED)->whereHas(
+            'shop.sellers',
+            function (Builder $query) use ($user) {
+                $query->where('user_id', $user->id);
+            }
 
-        // return BasketIndexResource::collection(Basket::has('items')->has('product')->has('shop')->whereHas('sellers', function ($q) use ($user) {
-        //     $q->where('owner_id', '=', $user->id);
-        // })->get());
-
-        DB::enableQueryLog();
-
-
-        $baskets = collect();
-        $shops = Shop::whereHas('sellers', function ($q) use ($user) {
-            $q->where('owner_id', '=', $user->id);
-        })->get();
-
-        foreach ($shops as $shop) {
-            print("shop_id: " . $shop->id);
-            $baskets->merge(Basket::where([['shop_id', $shop->id], ['status', Basket::STATUS_CONFIRMED]]));
-        }
-        dd(DB::getQueryLog());
-
-
+        )->get();
+        // dd(DB::getQueryLog());
         return BasketIndexResource::collection($baskets);
     }
 
@@ -196,7 +182,13 @@ class BasketController extends Controller
         }
     }
 
-
+    /**
+     * Returns the comment for a user/shop. This comment will belong to an unconfirmed basket. If the user has
+     * no unconfirmed basket for the shop, the basket will be created with an empty message.
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getComment(Request $request)
     {
         $user = Auth::user();
@@ -210,6 +202,13 @@ class BasketController extends Controller
         ]);
     }
 
+    /**
+     * Replaces the comment in an unconfirmed basket for a user. If the user has no unconfirmed basket for the
+     * shop, it will be created and the message attatched to it.
+     *
+     * @param Request $request
+     * @return void
+     */
     public function postComment(Request $request)
     {
         $user = Auth::user();
