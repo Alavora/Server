@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\BasketIndexResource;
 use App\Http\Resources\BasketResource;
 use App\Http\Resources\BasketShowResource;
+use App\Http\Resources\ItemResource;
+use App\Http\Resources\ShopsBasketsItemsResource;
 use App\Http\Resources\ShopsBasketsResource;
 use App\Http\Resources\UnitResource;
 use App\Models\Basket;
@@ -304,20 +306,17 @@ class BasketController extends Controller
         return ShopsBasketsResource::collection(Basket::where('user_id', $user->id)->get());
     }
 
-    public function itemsSeller(Request $request, Basket $basket)
+    public function itemsSeller(Request $request, int $basket_id)
     {
         $user = Auth::user();
-        dd($basket);
-        // // DB::enableQueryLog();
-        // $baskets = Basket::where("status", "=", Basket::STATUS_CONFIRMED)->whereHas(
-        //     'shop.sellers',
-        //     function (Builder $query) use ($user) {
-        //         $query->where('user_id', $user->id);
-        //     }
-
-        // )->get();
-        // // dd(DB::getQueryLog());
-        // return BasketIndexResource::collection($baskets);
+        // DB::enableQueryLog();
+        $basket = Basket::where([["status", "=", Basket::STATUS_CONFIRMED], ['id', $basket_id]])->first();
+        if ($basket->shop->sellers->firstWhere('id', $user->id) == null) {
+            return response()->json(['status_message' => 'Unauthorised'], 401);
+        }
+        $items = $basket->items;
+        // dd(DB::getQueryLog());
+        return ItemResource::collection($items);
     }
 
 
