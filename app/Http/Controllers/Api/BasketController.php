@@ -49,7 +49,7 @@ class BasketController extends Controller
         $baskets = Basket::where("status", "=", Basket::STATUS_CONFIRMED)->whereHas(
             'shop.sellers',
             function (Builder $query) use ($user) {
-                $query->where('user_id', $user->id);
+                $query->where('owner_id', $user->id);
             }
 
         )->get();
@@ -302,6 +302,22 @@ class BasketController extends Controller
             // // 'market_id' => ''
         ]);
         return ShopsBasketsResource::collection(Basket::where('user_id', $user->id)->get());
+    }
+
+    public function itemsSeller(Request $request, Basket $basket)
+    {
+        $user = Auth::user();
+        dd($basket);
+        // // DB::enableQueryLog();
+        // $baskets = Basket::where("status", "=", Basket::STATUS_CONFIRMED)->whereHas(
+        //     'shop.sellers',
+        //     function (Builder $query) use ($user) {
+        //         $query->where('user_id', $user->id);
+        //     }
+
+        // )->get();
+        // // dd(DB::getQueryLog());
+        // return BasketIndexResource::collection($baskets);
     }
 
 
