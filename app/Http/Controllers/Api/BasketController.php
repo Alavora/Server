@@ -269,6 +269,7 @@ class BasketController extends Controller
             'quantity' => 'required|numeric',
             'product_id' => 'required|integer',
             'unit_id' => 'required|integer',
+            'status' => 'integer',
         ]);
 
         //check if user has access to item

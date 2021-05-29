@@ -74,8 +74,18 @@ Route::get("seller/shops", "App\Http\Controllers\Api\ShopController@indexSeller"
 Route::get("seller/baskets", "App\Http\Controllers\Api\BasketController@indexSeller")->middleware('auth:sanctum');
 Route::get("seller/baskets/{basket_id}/items", "App\Http\Controllers\Api\BasketController@itemsSeller")->middleware('auth:sanctum');
 
-//Recive Item info (including status) and update it.
+//Update item info (including status)
+// $data = $request->validate([
+//     'item_id' => 'required|unique:items',
+//     'quantity' => 'required|numeric',
+//     'product_id' => 'required|integer',
+//     'unit_id' => 'required|integer',
+// ]);
 Route::post("seller/baskets/items/update", "App\Http\Controllers\Api\BasketController@itemUpdate")->middleware('auth:sanctum');
+
+
+Route::apiResource("seller/products", "App\Http\Controllers\Api\ProductSellerController")->middleware('auth:sanctum');
+
 
 
 Route::post("seller/baskets/confirm", "App\Http\Controllers\Api\BasketController@confirm")->middleware('auth:sanctum');
