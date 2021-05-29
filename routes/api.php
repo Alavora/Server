@@ -26,11 +26,11 @@ use App\Http\Controllers\AuthController;
 
 
 //User
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-Route::get('/update', [AuthController::class, 'update'])->middleware('auth:sanctum');
-Route::get('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::get('update', [AuthController::class, 'update'])->middleware('auth:sanctum');
+Route::get('me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 Route::apiResource('users', 'App\Http\Controllers\Api\UserController')->only('show', 'store', 'update')->middleware('auth:sanctum');
 // Route::post('/forgot/password', 'App\Http\Controllers\ForgotPasswordController')->name('forgot.password');
 Route::post('/forgot/password', 'App\Http\Controllers\Auth\ForgotPasswordController')->name('forgot.password');

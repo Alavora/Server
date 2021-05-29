@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Auth\SessionGuard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -79,11 +80,19 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout();
+        // Auth::logout();
 
-        return response()->json([
-            'logged_out' => Auth::check(),
-        ]);
+        if ($request->user()->currentAccessToken()->delete()) {
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'Logged Out',
+            ], 200);
+        } else {
+            return response()->json([
+                'status_code' => 408,
+                'message' => 'failed',
+            ], 408);
+        }
     }
 
     /**
