@@ -16,16 +16,31 @@ class Basket extends Model
     public const STATUS_PREPARING = 2;
     public const STATUS_READY = 3;
 
+    /**
+     * Links the basket to it's items
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function items()
     {
         return $this->hasMany(Item::class);
     }
 
+    /**
+     * Links the basket to it's shop.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function shop()
     {
         return $this->belongsTo(Shop::class);
     }
 
+    /**
+     * Links the basket to it's user (buyer)
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
