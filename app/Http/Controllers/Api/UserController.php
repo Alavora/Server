@@ -83,9 +83,7 @@ class UserController extends Controller
         ]);
 
         $user = User::find($user->id);
-        print($user->email . " " . $user->address . "\n");
         $user->update($data);
-        print($user->email . " " . $user->address . "\n");
     }
 
     /**
