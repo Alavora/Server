@@ -7,11 +7,23 @@ use App\Http\Resources\ShopIndexResource;
 use App\Http\Resources\ShopResource;
 use App\Models\Market;
 use App\Models\Shop;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Controler for Shop model
+ * @package App\Http\Controllers\Api
+ */
 class ShopController extends Controller
 {
+    /**
+     * Returns all shops, or filtered by market_id if present
+     * @param Request $request 
+     * @return AnonymousResourceCollection 
+     */
     public function index(Request $request)
     {
         // dd($request->market_id);
@@ -23,8 +35,11 @@ class ShopController extends Controller
         }
     }
 
-
-    public function indexSeller(Request $request)
+    /**
+     * Returns shops whose current user is the owner
+     * @return AnonymousResourceCollection 
+     */
+    public function indexSeller()
     {
         $user = Auth::user();
 
@@ -33,7 +48,11 @@ class ShopController extends Controller
         })->get());
     }
 
-
+    /**
+     * Creates a new Shop
+     * @param Request $request containing *'name', *'cif', 'image', *'phone', *'address', 'longitude', 'latitude'
+     * @return ShopResource New created Shop
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -59,6 +78,11 @@ class ShopController extends Controller
         return new ShopResource($shop);
     }
 
+    /**
+     * Deletes a Shop
+     * @param mixed $shop_id 
+     * @return JsonResponse 
+     */
     public function delete($shop_id)
     {
         Shop::deleted($shop_id);
@@ -67,11 +91,14 @@ class ShopController extends Controller
         ]);
     }
 
+    /**
+     * Returns a Shop by id
+     * @param mixed $shop_id 
+     * @return ShopResource 
+     */
     public function show($shop_id)
     {
-
-        return response()->json([
-            'successful' => true,
-        ]);
+        $shop = Shop::findOrFail($shop_id);
+        return new ShopResource($shop);
     }
 }

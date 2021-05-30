@@ -17,8 +17,6 @@ class BasketIndexResource extends JsonResource
         // return parent::toArray($request);
         return [
             "id" => $this->id, // 1,
-            // "created_at" => $this-> , // "2021-05-21T13:44:55.000000Z",
-            // "updated_at" => $this-> , // "2021-05-21T13:56:09.000000Z",
             "comments" => $this->comments, // "Lorem Ipsumjjjjjjjjjjjjjjj",
             "closed" => $this->closed, // null,
             "status" => $this->status, // "1",

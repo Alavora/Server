@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Controller for Auth calls
+ * @package App\Http\Controllers
+ */
 class AuthController extends Controller
 {
     /**

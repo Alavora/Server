@@ -7,9 +7,13 @@ use App\Http\Resources\ProductIndexResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\Shop;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
+use LogicException;
 
 class ProductSellerController extends Controller
 {
@@ -169,7 +173,7 @@ class ProductSellerController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse 
      */
     public function destroy(Product $product)
     {

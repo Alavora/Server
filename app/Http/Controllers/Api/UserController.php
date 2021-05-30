@@ -7,6 +7,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * User controller for API calls
+ * @package App\Http\Controllers\Api
+ */
 class UserController extends Controller
 {
     /**

@@ -7,16 +7,30 @@ use App\Http\Resources\ProductIndexResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\Shop;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use InvalidArgumentException;
+use LogicException;
 
+/**
+ * Allow to create, list, update and destroy Products
+ */
 class ProductController extends Controller
 {
+    /**
+     * List all products for a shop
+     *
+     * @param Request $request with shoip_id as a parameter
+     * @return ProductIndexResource::collection with all the products of the shop
+     */
     public function index(Request $request)
     {
-        // return Market::all();
-        return ProductIndexResource::collection(Product::all()->Where('shop_id', $request->shop_id));
+        $data = $request->validate([
+            'shop_id' => 'required|int',
+        ]);
+        return ProductIndexResource::collection(Product::all()->Where('shop_id', $data['shop_id']));
     }
 
     /**
@@ -41,29 +55,28 @@ class ProductController extends Controller
         $shop = Shop::findOrFail($request->shop_id);
 
         //check if user is owner of the shop
-        $seller = $shop->sellers()->findOrFail($user->id);
+        // $seller = $shop->sellers()->findOrFail($user->id);
 
         $product = Product::create($data);
-        // $product->units = $units;
-
-        // $product->image_path = $path;
-        // $product->image_name = $image_name;
-        //$product->shop()->associate($shop);
-
         $product->save();
-        // dd($this->mapUnits($data['units']));
-
         $product->units()->sync($this->mapUnits($data['units']));
+        $product->save();
         return new ProductResource($product);
     }
 
+    /**
+     * Updates a product
+     *
+     * @param Request $request containing 'name', 'shop_id' and 'units'
+     * @param Product $product to update
+     * @return Json with request status and product
+     */
     public function update(Request $request, Product $product)
     {
         $user = Auth::user();
         $data = $request->validate([
             'name' => 'required|min:3',
             'image_url' => '',
-            'price' => '',
             'shop_id' => 'required',
             'units' => 'array|required',
             'units.*' => [
@@ -71,9 +84,8 @@ class ProductController extends Controller
             ],
         ]);
 
-        $shop = Shop::findOrFail($product->shop_id);
-
-        $seller = $shop->sellers()->findOrFail($user->id);
+        // $shop = Shop::findOrFail($product->shop_id);
+        // $seller = $shop->sellers()->findOrFail($user->id);
 
         $product->update($data);
         $product->units()->sync($this->mapUnits($data['units']));
@@ -83,7 +95,11 @@ class ProductController extends Controller
         ]);
     }
 
-
+    /**
+     * Deletes a product
+     * @param Product $product 
+     * @return JsonResponse
+     */
     public function destroy(Product $product)
     {
         $user = Auth::user();
