@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Contoller class for Basket, and it's items. It allow users to create baskets, adding items and updating them.
+ * It also allow sellers to get their baskets and update their items.
+ */
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -33,6 +38,7 @@ class BasketController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
         $data = $request->validate([
             /** TODO **/
             "shop_id" => 'required|integer',
@@ -41,9 +47,18 @@ class BasketController extends Controller
             // 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             // // 'market_id' => ''
         ]);
-        return BasketIndexResource::collection(Basket::where('shop_id', $data['shop_id'])->get());
+        DB::enableQueryLog();
+        $basketList = BasketIndexResource::collection(Basket::where([['shop_id', $data['shop_id']], ['user_id', $user->id]])->get());
+        dd(DB::getQueryLog());
+        return $basketList;
     }
 
+    /**
+     * Returns a list of baskets for the current seller
+     *
+     * @param Request $request
+     * @return BasketIndexResource
+     */
     public function indexSeller(Request $request)
     {
         $user = Auth::user();
@@ -58,6 +73,58 @@ class BasketController extends Controller
         // dd(DB::getQueryLog());
         return BasketIndexResource::collection($baskets);
     }
+
+    /**
+     * Returns a basket (if seller has access to it)
+     *
+     * @param Request $request
+     * @return BasketResource
+     */
+    public function getBasketSeller($basket_id)
+    {
+        $user = Auth::user();
+        // DB::enableQueryLog();
+        $basket = Basket::where([["status", "=", Basket::STATUS_CONFIRMED], ['id', $basket_id]])->whereHas(
+            'shop.sellers',
+            function (Builder $query) use ($user) {
+                $query->where('owner_id', $user->id);
+            }
+
+        )->firstOrFail();
+        // dd(DB::getQueryLog());
+        return new BasketResource($basket);
+    }
+
+    /**
+     * Allow the seller to update basket status
+     *
+     * @param Request $request
+     * @return BasketResource
+     */
+    public function updateBasketSeller(Request $request)
+    {
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'status' => 'required|integer',
+        ]);
+
+        // DB::enableQueryLog();
+        //where("status", "=", Basket::STATUS_CONFIRMED)->
+        $basket = Basket::whereHas(
+            'shop.sellers',
+            function (Builder $query) use ($user) {
+                $query->where('owner_id', $user->id);
+            }
+
+        )->firstOrFail();
+
+        $basket->status = $data['status'];
+        $basket->save();
+        // dd(DB::getQueryLog());
+        return new BasketResource($basket);
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -189,7 +256,7 @@ class BasketController extends Controller
      * no unconfirmed basket for the shop, the basket will be created with an empty message.
      *
      * @param Request $request
-     * @return void
+     * @return response { data: "Comment text of unconfirmed user's basket for a shop" }
      */
     public function getComment(Request $request)
     {
@@ -296,17 +363,16 @@ class BasketController extends Controller
     public function shopsBaskets(Request $request)
     {
         $user = Auth::user();
-        $data = $request->validate([
-            /** TODO **/
-            //            "user_id" => 'required|integer',
-            // "description" => 'required|min:3',
-            // "cif" => 'required|min:3',
-            // 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            // // 'market_id' => ''
-        ]);
         return ShopsBasketsResource::collection(Basket::where('user_id', $user->id)->get());
     }
 
+    /**
+     * Returns items of a basket, if current user is a seller and has access to them
+     *
+     * @param Request $request
+     * @param integer $basket_id
+     * @return Collection
+     */
     public function itemsSeller(Request $request, int $basket_id)
     {
         $user = Auth::user();
@@ -319,17 +385,4 @@ class BasketController extends Controller
         // dd(DB::getQueryLog());
         return ItemResource::collection($items);
     }
-
-
-    // public function confirm(Request $request)
-    // {
-    //     $basket = Basket::get($request->shop_id);
-    //     if ($basket !== null) {
-    //         $basket->status = Basket::STATUS_READY;
-    //         $basket->save();
-    //         return response()->noContent(); // 204
-    //     } else {
-    //         return abort(404);
-    //     }
-    // }
 }

@@ -25,7 +25,9 @@ use App\Http\Controllers\AuthController;
 // routes/api.php
 
 
-//User
+//#############
+//### User ####
+//#############
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
@@ -37,17 +39,8 @@ Route::apiResource('users', 'App\Http\Controllers\Api\UserController')->only('sh
 Route::post('/forgot/password', 'App\Http\Controllers\Auth\ForgotPasswordController')->name('forgot.password');
 
 //###############
-//### client ####
+//### Client ####
 //###############
-
-//Parameters: none
-//Returns: A json of id, name, description, cif
-Route::apiResource('markets', 'App\Http\Controllers\Api\MarketController')->only('index', 'show', 'store',)->middleware('auth:sanctum');
-
-//Route::apiResource('shops', 'App\Http\Controllers\Api\ShopController')->only('index', 'show', 'store')->middleware('auth:sanctum');
-//Parameters: market_id
-//Retuns: market's shop, a json with id, name, cif, market_id
-Route::get('shops', 'App\Http\Controllers\Api\ShopController@index')->middleware('auth:sanctum');
 
 //parameters: quantity, product_id, unit_id
 //Returns: nothing, it adds a new item, update it if it was there; or delete it if quantity is zero
@@ -79,6 +72,12 @@ Route::get('seller/shops', 'App\Http\Controllers\Api\ShopController@indexSeller'
 Route::get('seller/baskets', 'App\Http\Controllers\Api\BasketController@indexSeller')->middleware('auth:sanctum');
 Route::get('seller/baskets/{basket_id}/items', 'App\Http\Controllers\Api\BasketController@itemsSeller')->middleware('auth:sanctum');
 
+//Returns basket info
+Route::get('seller/baskets/{basket_id}', 'App\Http\Controllers\Api\BasketController@getBasketSeller')->middleware('auth:sanctum');
+//updates status info
+Route::post('seller/baskets/{basket_id}', 'App\Http\Controllers\Api\BasketController@updateBasketSeller')->middleware('auth:sanctum');
+
+
 //Update item info (including status)
 // $data = $request->validate([
 //     'item_id' => 'required|unique:items',
@@ -98,4 +97,21 @@ Route::post('seller/baskets/confirm', 'App\Http\Controllers\Api\BasketController
 
 
 
-//deliverer
+//##################
+//### Deliverer ####
+//##################
+
+
+
+//##############
+//### Admin ####
+//##############
+
+//Parameters: none
+//Returns: A json of id, name, description, cif
+Route::apiResource('markets', 'App\Http\Controllers\Api\MarketController')->only('index', 'show', 'store',)->middleware('auth:sanctum');
+
+//Route::apiResource('shops', 'App\Http\Controllers\Api\ShopController')->only('index', 'show', 'store')->middleware('auth:sanctum');
+//Parameters: market_id
+//Retuns: market's shop, a json with id, name, cif, market_id
+Route::get('shops', 'App\Http\Controllers\Api\ShopController@index')->middleware('auth:sanctum');
