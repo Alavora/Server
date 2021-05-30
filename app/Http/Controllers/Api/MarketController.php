@@ -30,9 +30,9 @@ class MarketController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            "name" => 'required|min:3',
-            "description" => 'required|min:3',
-            "cif" => 'required|min:3',
+            'name' => 'required|min:3',
+            'description' => 'required|min:3',
+            'cif' => 'required|min:3',
             'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             // 'market_id' => ''
         ]);

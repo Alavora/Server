@@ -16,7 +16,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         // return Market::all();
-        return ProductIndexResource::collection(Product::all()->Where("shop_id", $request->shop_id));
+        return ProductIndexResource::collection(Product::all()->Where('shop_id', $request->shop_id));
     }
 
     /**

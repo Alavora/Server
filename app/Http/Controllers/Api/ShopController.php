@@ -17,7 +17,7 @@ class ShopController extends Controller
         // dd($request->market_id);
         // return Market::all();
         if ($request->market_id) {
-            return ShopIndexResource::collection(Shop::all()->Where("market_id", $request->market_id));
+            return ShopIndexResource::collection(Shop::all()->Where('market_id', $request->market_id));
         } else {
             return ShopIndexResource::collection(Shop::all());
         }
@@ -37,8 +37,8 @@ class ShopController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            "name" => 'required|min:3',
-            "cif" => 'required|min:3',
+            'name' => 'required|min:3',
+            'cif' => 'required|min:3',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'phone' => 'required|min:3',
             'address' =>  'required|min:3',

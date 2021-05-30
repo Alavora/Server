@@ -23,7 +23,7 @@ class UnitController extends Controller
      */
     public function getBySymbol($symbol)
     {
-        return new UnitResource(Unit::where("symbol", $symbol));
+        return new UnitResource(Unit::where('symbol', $symbol));
     }
 
 

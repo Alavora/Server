@@ -9,7 +9,7 @@ class Shop extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["name", "phone", "cif", "shop_image", "address"];
+    protected $fillable = ['name', 'phone', 'cif', 'shop_image', 'address'];
 
     /**
      * Links the shop to it's market

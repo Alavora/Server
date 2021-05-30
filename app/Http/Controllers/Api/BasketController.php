@@ -41,9 +41,9 @@ class BasketController extends Controller
         $user = Auth::user();
         $data = $request->validate([
             /** TODO **/
-            "shop_id" => 'required|integer',
-            // "description" => 'required|min:3',
-            // "cif" => 'required|min:3',
+            'shop_id' => 'required|integer',
+            // 'description' => 'required|min:3',
+            // 'cif' => 'required|min:3',
             // 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             // // 'market_id' => ''
         ]);
@@ -63,7 +63,7 @@ class BasketController extends Controller
     {
         $user = Auth::user();
         // DB::enableQueryLog();
-        $baskets = Basket::where("status", "=", Basket::STATUS_CONFIRMED)->whereHas(
+        $baskets = Basket::where('status', '=', Basket::STATUS_CONFIRMED)->whereHas(
             'shop.sellers',
             function (Builder $query) use ($user) {
                 $query->where('owner_id', $user->id);
@@ -84,7 +84,7 @@ class BasketController extends Controller
     {
         $user = Auth::user();
         // DB::enableQueryLog();
-        $basket = Basket::where([["status", "=", Basket::STATUS_CONFIRMED], ['id', $basket_id]])->whereHas(
+        $basket = Basket::where([['status', '=', Basket::STATUS_CONFIRMED], ['id', $basket_id]])->whereHas(
             'shop.sellers',
             function (Builder $query) use ($user) {
                 $query->where('owner_id', $user->id);
@@ -110,7 +110,7 @@ class BasketController extends Controller
         ]);
 
         // DB::enableQueryLog();
-        //where("status", "=", Basket::STATUS_CONFIRMED)->
+        //where('status', '=', Basket::STATUS_CONFIRMED)->
         $basket = Basket::whereHas(
             'shop.sellers',
             function (Builder $query) use ($user) {
@@ -137,9 +137,9 @@ class BasketController extends Controller
         $user = Auth::user();
         $data = $request->validate([
             /** TODO **/
-            // "name" => 'required|min:3',
-            // "description" => 'required|min:3',
-            // "cif" => 'required|min:3',
+            // 'name' => 'required|min:3',
+            // 'description' => 'required|min:3',
+            // 'cif' => 'required|min:3',
             // 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             // // 'market_id' => ''
         ]);
@@ -217,7 +217,6 @@ class BasketController extends Controller
         if ($basket == null) {
             $data = [
                 'shop_id' => $product->shop_id,
-                'user_id' => $user->id,
                 'status' => Basket::STATUS_UNCONFIRMED,
                 'user_id' => $user->id
             ];
@@ -256,7 +255,7 @@ class BasketController extends Controller
      * no unconfirmed basket for the shop, the basket will be created with an empty message.
      *
      * @param Request $request
-     * @return response { data: "Comment text of unconfirmed user's basket for a shop" }
+     * @return response { data: 'Comment text of unconfirmed user's basket for a shop' }
      */
     public function getComment(Request $request)
     {
@@ -317,7 +316,7 @@ class BasketController extends Controller
     public function itemConfirm(Request $request)
     {
         $data = $request->validate([
-            "item_id" => 'required|integer',
+            'item_id' => 'required|integer',
         ]);
         $item = Item::find($data['item_id']);
 
@@ -377,7 +376,7 @@ class BasketController extends Controller
     {
         $user = Auth::user();
         // DB::enableQueryLog();
-        $basket = Basket::where([["status", "=", Basket::STATUS_CONFIRMED], ['id', $basket_id]])->first();
+        $basket = Basket::where([['status', '=', Basket::STATUS_CONFIRMED], ['id', $basket_id]])->first();
         if ($basket->shop->sellers->firstWhere('id', $user->id) == null) {
             return response()->json(['status_message' => 'Unauthorised'], 401);
         }

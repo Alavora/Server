@@ -9,7 +9,7 @@ class Market extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["name", "description", "cif", "market_image"];
+    protected $fillable = ['name', 'description', 'cif', 'market_image'];
 
     /**
      * Links the market to it's shops

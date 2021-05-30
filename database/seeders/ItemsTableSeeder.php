@@ -31,17 +31,14 @@ class ItemsTableSeeder extends Seeder
                     if ($basket == null) {
                         $data = [
                             'shop_id' => $product->shop_id,
-                            'user_id' => $user->id,
                             'status' => Basket::STATUS_UNCONFIRMED,
                             'user_id' => $user->id
                         ];
                         $basket = Basket::make($data);
                         $basket->save();
                     }
-                    // dd(DB::getQueryLog());
 
                     $unit = $product->units()->inRandomOrder()->first();
-
 
                     $item = new Item;
                     $item->product_id = $product->id;
