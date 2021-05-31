@@ -121,7 +121,7 @@ class AuthController extends Controller
         $user = Auth::user();
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8',
             'address' => 'string|max:255',
             'phone' => 'string|max:255',
@@ -129,16 +129,21 @@ class AuthController extends Controller
             'latitude' => '',
         ]);
 
-        $user = User::findtOrFail($user->id);
+        $user = User::findOrFail($user->id);
 
-        $user->name  = $validatedData['name'];
-        $user->email  = $validatedData['email'];
-        $user->password  = Hash::make($validatedData['password']);
-        $user->address  = $validatedData['address'];
-        $user->phone  = $validatedData['phone'];
+        // $user->name  = $validatedData['name'];
+        // $user->email  = $validatedData['email'];
+        // $user->password  = Hash::make($validatedData['password']);
+        // $user->address  = $validatedData['address'];
+        // $user->phone  = $validatedData['phone'];
 
-        $user->save();
+        // $user->save();
 
-        return response()->json(['return' => True], 202);
+        $user->update($validatedData);
+
+        return response()->json([
+            'return' => True,
+            'user' => new UserResource($user)
+        ], 202);
     }
 }
