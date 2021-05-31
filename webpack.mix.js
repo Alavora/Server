@@ -12,6 +12,10 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    //    .vue()
-    //    .sass('resources/sass/app.scss', 'public/css')
-    ;
+    .sass('resources/sass/app.scss', 'public/css')
+    .sourceMaps();
+
+mix.copy('resources/assets/images', 'public/images', false);
+// mix.copy('resources/css/app.css', 'public/css/app.css', false);
+mix.copy('resources/css/welcome.css', 'public/css/welcome.css', false);
+mix.copy('resources/js/welcome.js', 'public/js/welcome.js', false);

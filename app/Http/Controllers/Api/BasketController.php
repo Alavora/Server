@@ -68,7 +68,6 @@ class BasketController extends Controller
             function (Builder $query) use ($user) {
                 $query->where('owner_id', $user->id);
             }
-
         )->get();
         // dd(DB::getQueryLog());
         return BasketIndexResource::collection($baskets);
