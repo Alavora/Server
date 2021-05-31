@@ -1,3 +1,7 @@
 {
-    "/js/app.js": "/js/app.js"
+    "/js/app.js": "/js/app.js",
+    "/css/app.css": "/css/app.css",
+    "/images/logo.png": "/images/logo.png",
+    "/css/welcome.css": "/css/welcome.css",
+    "/js/welcome.js": "/js/welcome.js"
 }

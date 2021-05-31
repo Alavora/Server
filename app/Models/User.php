@@ -46,17 +46,31 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-
+    /**
+     * Links the user to its baskets
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function baskets()
     {
         return $this->hasMany(Basket::class);
     }
 
+    /**
+     * Links the seller to it's owned shops
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function ownedShops()
     {
         return $this->hasMany(Shop::class, 'shop_owner', 'owner_id', 'shop_id');
     }
 
+    /**
+     * Links the distributor to it's distributed baskets
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function distributedBaskets()
     {
         return $this->hasMany(Basket::class);

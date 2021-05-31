@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Auth\SessionGuard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Controller for Auth calls
+ * @package App\Http\Controllers
+ */
 class AuthController extends Controller
 {
     /**
@@ -22,8 +27,8 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'address' => 'string|max:255',
-            'phone' => 'string|max:255',
+            'address' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
             'longitude' => '',
             'latitude' => '',
         ]);
@@ -79,11 +84,19 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout();
+        // Auth::logout();
 
-        return response()->json([
-            'logged_out' => Auth::check(),
-        ]);
+        if ($request->user()->currentAccessToken()->delete()) {
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'Logged Out',
+            ], 200);
+        } else {
+            return response()->json([
+                'status_code' => 408,
+                'message' => 'failed',
+            ], 408);
+        }
     }
 
     /**
@@ -108,7 +121,7 @@ class AuthController extends Controller
         $user = Auth::user();
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8',
             'address' => 'string|max:255',
             'phone' => 'string|max:255',
@@ -116,16 +129,21 @@ class AuthController extends Controller
             'latitude' => '',
         ]);
 
-        $user = User::findtOrFail($user->id);
+        $user = User::findOrFail($user->id);
 
-        $user->name  = $validatedData['name'];
-        $user->email  = $validatedData['email'];
-        $user->password  = Hash::make($validatedData['password']);
-        $user->address  = $validatedData['address'];
-        $user->phone  = $validatedData['phone'];
+        // $user->name  = $validatedData['name'];
+        // $user->email  = $validatedData['email'];
+        // $user->password  = Hash::make($validatedData['password']);
+        // $user->address  = $validatedData['address'];
+        // $user->phone  = $validatedData['phone'];
 
-        $user->save();
+        // $user->save();
 
-        return response()->json(['return' => True], 202);
+        $user->update($validatedData);
+
+        return response()->json([
+            'return' => True,
+            'user' => new UserResource($user)
+        ], 202);
     }
 }

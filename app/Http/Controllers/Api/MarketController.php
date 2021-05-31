@@ -9,15 +9,29 @@ use App\Http\Resources\MarketShowResource;
 use App\Models\Market;
 use Illuminate\Http\Request;
 
+/**
+ * It allows to create, list and show markets
+ */
 class MarketController extends Controller
 {
+    /**
+     * Returns a list of Markets
+     *
+     * @return MarketIndexResource List of markets
+     */
     public function index()
     {
         // return Market::all();
         return MarketIndexResource::collection(Market::all());
     }
 
-    public function show($id)
+    /**
+     * Returns a Market with all data necessary to show it
+     *
+     * @param integer $id
+     * @return MarketShowResource
+     */
+    public function show(int $id): MarketShowResource
     {
         // return Market::findOrFail($id);
         $market = Market::findOrFail($id);
@@ -27,12 +41,18 @@ class MarketController extends Controller
         return new MarketShowResource($market);
     }
 
-    public function store(Request $request)
+    /**
+     * Stores a Market and returns it
+     *
+     * @param Request $request
+     * @return MarketResource
+     */
+    public function store(Request $request): MarketResource
     {
         $data = $request->validate([
-            "name" => 'required|min:3',
-            "description" => 'required|min:3',
-            "cif" => 'required|min:3',
+            'name' => 'required|min:3',
+            'description' => 'required|min:3',
+            'cif' => 'required|min:3',
             'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             // 'market_id' => ''
         ]);

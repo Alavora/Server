@@ -22,7 +22,6 @@ class ShopResource extends JsonResource
             "cif" => $this->cif,
             "phone" => $this->phone,
             "address" => $this->address,
-            // "market_id" => $this->market_id,
             "market" => new MarketResource($this->market),
         ];
     }

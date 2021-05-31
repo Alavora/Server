@@ -28,7 +28,7 @@ class CreateBasketsTable extends Migration
             $table->unsignedBigInteger('user_id')->default(1)->index()->nullable();
             $table->foreign('user_id')->references('id')->on('users');
 
-            $table->unsignedBigInteger('distributor_id')->index()->nullable();
+            $table->unsignedBigInteger('distributor_id')->index()->nullable()->default(null);
             $table->foreign('distributor_id')->references('id')->on('users');
         });
     }

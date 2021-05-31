@@ -17,10 +17,21 @@ class Item extends Model
     public const STATUS_PREPARING = 2;
     public const STATUS_READY = 3;
 
+    /**
+     * Links the item to it's basket
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function basket()
     {
         return $this->belongsTo(Basket::class);
     }
+
+    /**
+     * Links the item to it's product
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function product()
     {
         return $this->belongsTo(Product::class);

@@ -20,6 +20,9 @@ class ProductsTableSeeder extends Seeder
                     'Peres' => 'un,kg',
                     'Prunes' => 'un,kg',
                     'Plàtans' => 'un,kg',
+                    'Kiwis' => 'un,kg',
+                    'Sindria' => 'un',
+                    'Meló' => 'un',
                 ];
             case 1:
                 return [

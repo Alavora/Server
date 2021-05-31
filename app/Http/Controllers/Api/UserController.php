@@ -7,6 +7,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * User controller for API calls
+ * @package App\Http\Controllers\Api
+ */
 class UserController extends Controller
 {
     /**
@@ -73,7 +77,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
         $data = $this->validate($request, [
-            // 'username' => 'required|max:8',
+            'name' => 'min:3',
             'password' => 'min:8',
             'email' => 'email',
             'address' => 'min:10',
@@ -83,9 +87,7 @@ class UserController extends Controller
         ]);
 
         $user = User::find($user->id);
-        print($user->email . " " . $user->address . "\n");
         $user->update($data);
-        print($user->email . " " . $user->address . "\n");
     }
 
     /**
