@@ -260,8 +260,12 @@ class BasketController extends Controller
     public function getComment(Request $request)
     {
         $user = Auth::user();
+        $values = $request->validate([
+            'shop_id' => 'required|integer',
+        ]);
+
         $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->firstOrCreate([
-            'shop_id' => $request->shop_id,
+            'shop_id' => $values['shop_id'],
             'user_id' => $user->id,
         ]);
 
@@ -302,8 +306,11 @@ class BasketController extends Controller
     public function confirm(Request $request)
     {
         $user = Auth::user();
+        $values = $request->validate([
+            'shop_id' => 'required|integer',
+        ]);
         $basket = Basket::where('status', Basket::STATUS_UNCONFIRMED)->firstOrCreate([
-            'shop_id' => $request->shop_id,
+            'shop_id' => $values['shop_id'],
             'user_id' => $user->id,
         ]);
         $basket->status = Basket::STATUS_CONFIRMED;

@@ -55,7 +55,6 @@ Route::get('baskets/all', 'App\Http\Controllers\Api\BasketController@shopsBasket
 // Route::apiResource('products', 'App\Http\Controllers\Api\ProductController')->only(['index', 'show', 'store', 'update'])->middleware('auth:sanctum');
 Route::apiResource('products', 'App\Http\Controllers\Api\ProductController')->middleware('auth:sanctum');
 Route::apiResource('units', 'App\Http\Controllers\Api\UnitController')->only('index', 'show', 'store')->middleware('auth:sanctum');
-Route::post('baskets/addproduct', 'App\Http\Controllers\Api\BasketController@addProduct')->middleware('auth:sanctum');
 Route::get('baskets/comment', 'App\Http\Controllers\Api\BasketController@getComment')->middleware('auth:sanctum');
 Route::post('baskets/comment', 'App\Http\Controllers\Api\BasketController@postComment')->middleware('auth:sanctum');
 Route::post('baskets/confirm', 'App\Http\Controllers\Api\BasketController@confirm')->middleware('auth:sanctum');
