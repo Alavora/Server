@@ -21,12 +21,12 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="example col-md-6 text-center">
+            <div class="example col-md-6 text-center mx-auto">
                 <img src="{{ asset('/images/logo.png') }}" />
             </div>
         </div>
         <div class="row">
-            <div class="example col-md-6 text-center">
+            <div class="example col-md-6 text-center mx-auto">
                 <p>
                     Benvinguts a Alavora, l'aplicació per comprar <em>a distància el que tens a prop</em>.
                 </p>
