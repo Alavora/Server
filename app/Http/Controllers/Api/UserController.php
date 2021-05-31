@@ -77,7 +77,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
         $data = $this->validate($request, [
-            'name' => 'max:8',
+            'name' => 'min:3',
             'password' => 'min:8',
             'email' => 'email',
             'address' => 'min:10',
