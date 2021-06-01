@@ -337,7 +337,7 @@ class BasketController extends Controller
     {
         $user = Auth::user();
         $data = $request->validate([
-            'item_id' => 'required|unique:items',
+            'item_id' => 'required',
             'quantity' => 'required|numeric',
             'product_id' => 'required|integer',
             'unit_id' => 'required|integer',
@@ -345,18 +345,21 @@ class BasketController extends Controller
         ]);
 
         //check if user has access to item
-        $item = Basket::whereHas(
+        $item = Item::where('id', $data['item_id'])->whereHas(
             'product.shop.sellers',
             function (Builder $query) use ($user) {
-                $query->where('user_id', $user->id);
+                $query->where('owner_id', $user->id);
             }
 
         )->firstOrFail();
-        $unit = Unit::findOrFail($data['unit_id']);
+        // $unit = Unit::findOrFail($data['unit_id']);
+        $unit = $item->product->units()->where('units.id', $data['unit_id'])->first();
+
         $item->unit_id = $unit->id;
         $item->quantity = $data['quantity'];
-        $item->price = $unit->price;
+        $item->price = $unit->pivot->price;
         $item->save();
+        return new ItemResource($item);
     }
 
     /**

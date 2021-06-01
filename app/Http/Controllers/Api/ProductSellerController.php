@@ -157,7 +157,7 @@ class ProductSellerController extends Controller
             $q->where('owner_id', '=', $user->id);
         })->get();
         $shop_ids = $shops->pluck('id');
-        if (!$shop_ids->contains($this->shop_id)) {
+        if (!$shop_ids->contains($product->shop_id)) {
             return response()->json(['status_message' => 'Unauthorised'], 401);
         }
 
@@ -187,5 +187,13 @@ class ProductSellerController extends Controller
         return response()->json([
             'successful' => true,
         ]);
+    }
+
+    private function mapUnits($units)
+    {
+        // dd($units);
+        return collect($units)->map(function ($i) {
+            return ['price' => $i];
+        });
     }
 }
